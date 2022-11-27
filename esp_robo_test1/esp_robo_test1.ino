@@ -1,12 +1,7 @@
-/*
- * ESP8266 SPIFFS HTML Web Page with JPEG, PNG Image 
- * https://circuits4you.com
- */
-
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <FS.h>   //Include File System Headers
+#include <FS.h>
 
 const char* htmlfile = "/index.html";
 
@@ -24,10 +19,9 @@ const char* htmlfile = "/index.html";
 
 #define SERIAL true
 
-const char *ssid = "dongbeino1";
-const char *pass = "topsecret";      //  ８文字以上
-ESP8266WebServer Server(80);         //  ポート番号（HTTP）
-int Counter = 0;                     //  お客さんカウンタ
+const char *ssid = "access_point";
+const char *pass = "pasuwaado";
+ESP8266WebServer Server(80);
 
 
 void handlePWM(){
@@ -73,15 +67,14 @@ void handleWebRequests(){
 }
 
 void setup() {
-  //  ファイルシステム
+
   SPIFFS.begin();
-  //  シリアルモニタ（動作ログ）
+
+  if(SERIAL) Serial.begin(115200);
   
-  if(SERIAL) Serial.begin(115200);               //  ESP 標準の通信速度 115200
-  
-  delay(100);                         //  100ms ほど待ってからログ出力可
+  delay(100);
   if(SERIAL) Serial.println("\n*** Dongbeino ***");
-  //  アクセスポイントの構成
+
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, pass);
   
@@ -91,10 +84,10 @@ void setup() {
     Serial.print("address: "); Serial.println(WiFi.softAPIP());
   }
   WiFi.softAPIP();
-  //Initialize Webserver
+
   Server.on("/",handleRoot);
-  Server.on("/setLED",handlePWM); //Reads ADC function is called from out index.html
-  Server.onNotFound(handleWebRequests); //Set setver all paths are not found so we can handle as per URI
+  Server.on("/setLED",handlePWM);
+  Server.onNotFound(handleWebRequests);
   Server.begin();  
 }
 
