@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery.min.js"></script>
+<script src="knob.js"></script>
+
+<script>
+    $('.dial').trigger(
+        'configure',
+        {
+            "min":0,
+            "max":100,
+            "width":150,
+    	    "fgColor":"#ffec03",
+    	    "skin":"tron",
+    	    "thickness":0.2,
+    	    "displayPrevious":true,
+            "cursor":true
+        }
+    );
+</script>
+</head>
+<body>
+<center>
+<a href="https://circuits4you.com">Circuits4You.com</a><br>
+Demonstrates realtime LED PWM value update without page refresh<br>
+LED Fadding Input<br>
+<input type="text" class="dial" value="75" data-displayPrevious=true data-fgColor="#00A8A9" data-thickness=.3 value="29">
+</center>
+<script>
+    $(".dial").knob({
+        'change' : function (v) { console.log(Math.round(v,0));    
+		$.ajax({url: "/setLED?pwm="+Math.round(v,0), success: function(result){
+        		$("#div1").html(result);
+    		}});
+	}
+    });
+	
+
+</script>
+
+</body>
+</html>
+
