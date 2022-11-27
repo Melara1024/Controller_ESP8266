@@ -1,7 +1,14 @@
+/*
+ * ESP8266 SPIFFS HTML Web Page with JPEG, PNG Image 
+ * https://circuits4you.com
+ */
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <FS.h>
+#include <FS.h>   //Include File System Headers
+
+const char* htmlfile = "/index.html";
 
 #define RIGHT_REAR_1 5
 #define RIGHT_REAR_2 14
@@ -15,24 +22,37 @@
 #define LEFT_FRONT_1 16
 #define LEFT_FRONT_2 15
 
-#define SERIAL false
+#define SERIAL true
 
 const char *ssid = "dongbeino1";
 const char *pass = "topsecret";      //  ８文字以上
 ESP8266WebServer Server(80);         //  ポート番号（HTTP）
 int Counter = 0;                     //  お客さんカウンタ
 
+
 void handlePWM(){
-  String PWM = server.arg("pwm");
-  int p = 1024 - (PWM.toInt())*10;
+  //pwmに格納されている値を持ってくる
+  //持ってきたいのはx座標とy座標，回転が押されているかどうか
+  String PWM = Server.arg("pwm");
+  int p = (((PWM.toInt())*255)/100);
   Serial.println(p);
-  analogWrite(LED,p);
-  server.send(200, "text/plane","");
+  analogWrite(RIGHT_REAR_1,p);
+  analogWrite(RIGHT_REAR_2,0);
+
+  analogWrite(RIGHT_FRONT_1,p);
+  analogWrite(RIGHT_FRONT_2,0);
+
+  analogWrite(LEFT_REAR_1,0);
+  analogWrite(LEFT_REAR_2,p);
+
+  analogWrite(LEFT_FRONT_1,0);
+  analogWrite(LEFT_FRONT_2,p);
+  Server.send(200, "text/plane","");
 }
 
 void handleRoot(){
-  server.sendHeader("Location", "/index.html",true);   //Redirect to our html web page
-  server.send(302, "text/plane","");
+  Server.sendHeader("Location", "/index.html",true);   //Redirect to our html web page
+  Server.send(302, "text/plane","");
 }
 
 void handleWebRequests(){
@@ -51,41 +71,6 @@ void handleWebRequests(){
   Server.send(404, "text/plain", message);
   Serial.println(message);
 }
-
-//  Server.on(...) を指定せず，すべてを handleNotFound で処理する．
-//  URI で指定されるファイルがあればクライアントに転送する．
-//  なければ 404 エラー！
-void handleNotFound() {
-  if (! handleFileRead(Server.uri())) {
-    //  ファイルが見つかりません
-    if(SERIAL) Serial.println("404 not found");
-    Server.send(404, "text/plain", "File not found in Dongbeino...");
-  }
-}
-
-//  SPIFSS のファイルをクライアントに転送する
-bool handleFileRead(String path) {
-  if(SERIAL) Serial.println("handleFileRead: trying to read " + path);
-  // パス指定されたファイルがあればクライアントに送信する
-  if (path.endsWith("/")) path += "index.html";
-  String contentType = getContentType(path);
-
-  if(SERIAL) Serial.println("searching index.html");
-  if (SPIFFS.exists(path)) {
-    if(SERIAL) Serial.println("handleFileRead: sending " + path);
-    File file = SPIFFS.open(path, "r");
-    Server.streamFile(file, contentType);
-    file.close();
-    if(SERIAL) Serial.println("handleFileRead: sent " + path);
-    return true;
-  }
-  else {
-    if(SERIAL) Serial.println("handleFileRead: 404 not found");
-    Server.send (404, "text/plain", "ESP: 404 not found");
-    return false;
-  }
-}
-
 
 void setup() {
   //  ファイルシステム
@@ -114,8 +99,7 @@ void setup() {
 }
 
 void loop() {
-
-  Server.handleClient();
+ Server.handleClient();
 }
 
 bool loadFromSpiffs(String path){
