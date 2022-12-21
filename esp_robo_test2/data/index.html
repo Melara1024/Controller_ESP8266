@@ -1,46 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-<!--こいつを使ってjavascriptを動かす-->
+<body>
+
 <script src="jquery.min.js"></script>
 
-<!--ウィジェットのjsはここで指定-->
-<script src="knob.js"></script>
+<div id="joypad">MOVE</div>
+<div id="turnleft">TURNLEFT</div>
+<div id="turnright">TURNRIGHT</div>
 
-<script>
-    $('.dial').trigger(
-        'configure',
-        {
-            "min":0,
-            "max":100,
-            "width":150,
-    	    "fgColor":"#ffec03",
-    	    "skin":"tron",
-    	    "thickness":0.2,
-    	    "displayPrevious":false,
-            "cursor":false
-        }
-    );
-</script>
-</head>
-<body>
-<center>
-<input type="text" class="dial" value="75" data-displayPrevious=true data-fgColor="#00A8A9" data-thickness=.3 value="29">
-</center>
-<script>
-    $(".dial").knob({
-        'change' : function (v) { console.log(Math.round(v,0)); 
-        //このpwmの値がArduinoスケッチに送信される   
-		$.ajax({url: "/setLED?pwm="+Math.round(v,0), success: function(result){
-        		$("#div1").html(result);
-    		}});
-	}
-    });
-	
-
-</script>
+<script src="touch.js"></script>
 
 </body>
 </html>
-
