@@ -17,6 +17,8 @@ const char* htmlfile = "/index.html";
 #define LEFT_FRONT_1 16
 #define LEFT_FRONT_2 15
 
+#define COS45 0.707
+
 #define SERIAL true
 
 const char *ssid = "access_point";
@@ -60,41 +62,35 @@ void handlePWM() {
 }
 
 void moveRobot(int x, int y) {
-  // 最初にタッチした位置を原点とする位置ベクトルが格納されている
   Serial.printf("relX = %d\n", x);
   Serial.printf("relY = %d\n", y);
 
-  //Todo xとyの値をモーターの出力値に変換する必要がある
-  
-//  analogWrite(RIGHT_REAR_1, 70);
-//  analogWrite(RIGHT_REAR_2, 0);
-//
-//  analogWrite(RIGHT_FRONT_1, 70);
-//  analogWrite(RIGHT_FRONT_2, 0);
-//
-//  analogWrite(LEFT_REAR_1, 70);
-//  analogWrite(LEFT_REAR_2, p);
-//
-//  analogWrite(LEFT_FRONT_1, 70);
-//  analogWrite(LEFT_FRONT_2, p);
-
+  motor(RIGHT_REAR_1, RIGHT_REAR_2, (x + y)/4);
+  motor(RIGHT_FRONT_1, RIGHT_FRONT_2, (y - x)/4);
+  motor(LEFT_REAR_1, LEFT_REAR_2, (y - x)/4);
+  motor(LEFT_FRONT_1, LEFT_FRONT_2, (x + y)/4);
 }
 void turnRobot(boolean left) {
   Serial.printf("left = %d\n", left);
 
   //Todo left値のtrue/falseにあわせて定速回転するだけ
   
-//  analogWrite(RIGHT_REAR_1, p);
-//  analogWrite(RIGHT_REAR_2, 0);
-//
-//  analogWrite(RIGHT_FRONT_1, p);
-//  analogWrite(RIGHT_FRONT_2, 0);
-//
-//  analogWrite(LEFT_REAR_1, 0);
-//  analogWrite(LEFT_REAR_2, p);
-//
-//  analogWrite(LEFT_FRONT_1, 0);
-//  analogWrite(LEFT_FRONT_2, p);
+  motor(RIGHT_REAR_1, RIGHT_REAR_2, left ? 255 : -255);
+  motor(RIGHT_FRONT_1, RIGHT_FRONT_2, left ? 255 : -255);
+  motor(LEFT_REAR_1, LEFT_REAR_2, left ? -255 : 255);
+  motor(LEFT_FRONT_1, LEFT_FRONT_2, left ? -255 : 255);
+}
+
+// ピンを配列として読めるようにしたほうが便利
+void motor(int 1pin, int 2pin, int power){
+  if(power > 0){
+    analogWrite(1pin,  power);
+    analogWrite(2pin,  0);
+  }
+  else{
+    analogWrite(1pin,  0);
+    analogWrite(2pin, -1*power);
+  }
 }
 
 void handleRoot() {
