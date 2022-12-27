@@ -3,25 +3,26 @@ html,body {
 	padding:0;
 	text-align:center;
 	font-family:Arial, Helvetica, sans-serif;
+	user-select: none;
 }
 #joypad {
 	margin:10px 10px 8px;
-	background:blue;
+	background:aquamarine;
 	color:#fff;
 	line-height:50vh;
+	user-select: none;
 }
 #turnleft {
 	margin:10px 10px 8px;
-	background:yellow;
+	background:aquamarine;
 	color:#fff;
 	line-height:25vh;
+	user-select: none;
 }
 #turnright {
 	margin:10px 10px 8px;
-	background: orange;
+	background: aquamarine;
 	color:#fff;
 	line-height:25vh;
-}
-#eventname {
-	margin: 0 0 8px;
+	user-select: none;
 }
