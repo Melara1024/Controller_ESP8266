@@ -5,15 +5,6 @@ var turnright = document.getElementById('turnright');
 var originx = 0
 var originy = 0
 
-var lastx = 0
-var lasty = 0
-
-var oldXData;
-var nowXData;
-
-var oldYData;
-var nowYData;
-
 var t;
 
 joypad.addEventListener('touchstart', function(event) {
@@ -28,10 +19,10 @@ joypad.addEventListener('touchmove', function(event) {
     var px = event.changedTouches[0].pageX - originx;
     var py = event.changedTouches[0].pageY - originy;
 
-    nowXData = $.ajax({url: "/joyEvent?px="+px, success: function(result){
+    $.ajax({url: "/joyEvent?px="+px, success: function(result){
     $("#div1").html(result);}});
 
-    nowYData = $.ajax({url: "/joyEvent?py="+py, success: function(result){
+    $.ajax({url: "/joyEvent?py="+py, success: function(result){
     $("#div1").html(result);}});
 
     t = performance.now();

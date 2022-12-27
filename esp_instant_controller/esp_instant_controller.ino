@@ -5,49 +5,34 @@
 
 # define PI 3.1415
 
-const char* htmlfile = "/index.html";
-
-
-const char *ssid = "access_point";
-const char *pass = "pasuwaado";
+const char *ssid = "*robot name*";
+const char *pass = "*your passward*";
 ESP8266WebServer Server(80);
-
-unsigned long ts;
-unsigned long te;
 
 int RIGHT_REAR[] = {5, 14};
 int RIGHT_FRONT[] = {2, 4};
 int LEFT_REAR[] = {13, 12};
 int LEFT_FRONT[] = {16, 15};
 
-// x方向の原点
-int originX = 0;
-// y方向の原点
-int originY = 0;
-// x方向の速度
 int joyX = 0;
-// y方向の速度
 int joyY = 0;
-// 左旋回ボタン
 int turnL = 0;
-// 右旋回ボタン
 int turnR = 0;
 
-
+// Event Subscriber
 void joyEvent() {
   String px = Server.arg("px");
   String py = Server.arg("py");
   if(px != NULL)  joyX = px.toInt();
   if(py != NULL)  joyY = py.toInt();
 }
-
 void leftEvent() {
   if(Server.arg("l") != NULL)  turnL = (Server.arg("l")).toInt();
 }
-
 void rightEvent() {
   if(Server.arg("r") != NULL)  turnR = (Server.arg("r")).toInt();
 }
+
 
 void motor(int *pin, int power){
   if(abs(power) < 10){
@@ -71,7 +56,6 @@ void handleRoot() {
   Server.sendHeader("Location", "/index.html", true);  //Redirect to our html web page
   Server.send(302, "text/plane", "");
 }
-
 void handleWebRequests() {
   if (loadFromSpiffs(Server.uri())) return;
   String message = "File Not Detected\n\n";
@@ -87,11 +71,10 @@ void handleWebRequests() {
   }
   Server.send(404, "text/plain", message);
 }
-
 void setup() {
   SPIFFS.begin();
 
-  delay(1000);
+  delay(100);
 
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, pass);
@@ -105,7 +88,7 @@ void setup() {
   Server.onNotFound(handleWebRequests);
   Server.begin();
 
-  delay(1000);
+  delay(100);
 
   pinMode(RIGHT_REAR[0], OUTPUT);
   pinMode(RIGHT_REAR[1], OUTPUT);
